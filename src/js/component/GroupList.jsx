@@ -8,14 +8,31 @@ export const GroupList = () => {
     newTasks.splice(index, 1);
     setTasks(newTasks);
   };
+  const handleKeyUp = (e) => {
+    if (e.code === "Enter") {
+      const inputValue = e.target.value.trim();
+      if (inputValue !== "") {
+        setTasks([...tasks, inputValue]);
+        e.target.value = "";
+        // setTasks([...tasks, e.target.value]);
+      }
+    }
+    // {
+    //   if (e.target.value.trim() !== "") {
+    //     setTasks([...tasks, e.target.value]);
+    //   }
+    // }
+  };
   return (
     <div className="text-center">
       <input
         className="input"
         type="text"
-        onKeyUp={(e) =>
-          e.keyCode === 13 && setTasks([...tasks, e.target.value])
-        }
+        onKeyUp={handleKeyUp}
+        // onKeyUp={(e) =>
+        //   e.keyCode === 13 &&
+        //   setTasks([...tasks, e.target.value])
+        // }
       />
       <ul className="list-group">
         {tasks.length === 0
