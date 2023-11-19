@@ -15,6 +15,7 @@ export const GroupList = () => {
       const data = await response.json();
       console.log(data);
       setTaskList(data);
+      // createUser();
     } else {
       return "Error: ", response.status, response.statusText;
     }
@@ -68,8 +69,8 @@ export const GroupList = () => {
     if (response.ok) {
       const data = await response.json();
       console.log(data);
-      getTodo();
       createUser();
+      getTodo();
     } else {
       console.error("Error:", response.status, response.statusText);
     }
@@ -91,6 +92,7 @@ export const GroupList = () => {
       if (response.ok) {
         const data = await response.json();
         console.log("Usuario creado:", data);
+        getTodo();
       } else {
         console.error(
           "Error al crear el usuario:",
