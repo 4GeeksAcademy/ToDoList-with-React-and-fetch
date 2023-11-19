@@ -1,30 +1,8 @@
 import React, { useState, useEffect } from "react";
 import reactDom from "react-dom";
 
-// fetch('https://playground.4geeks.com/apis/fake/todos/user/luisroldan', {
-//       method: "PUT",
-//       body: JSON.stringify(todos),
-//       headers: {
-//         "Content-Type": "application/json"
-//       }
-//     })
-//     .then(resp => {
-//         console.log(resp.ok); // Será true (verdad) si la respuesta es exitosa.
-//         console.log(resp.status); // el código de estado = 200 o código = 400 etc.
-//         console.log(resp.text()); // Intentará devolver el resultado exacto como cadena (string)
-//         return resp.json(); // (regresa una promesa) will try to parse the result as json as return a promise that you can .then for results
-//     })
-//     .then(data => {
-//         //Aquí es donde debe comenzar tu código después de que finalice la búsqueda
-//         console.log(data); //esto imprimirá en la consola el objeto exacto recibido del servidor
-//     })
-//     .catch(error => {
-//         //manejo de errores
-//         console.log(error);
-//     });
-
 export const GroupList = () => {
-  const [tasks, setTasks] = useState([]);
+  const [taskList, setTaskList] = useState([]);
 
   const getTodo = async () => {
     const API_URL =
@@ -36,13 +14,13 @@ export const GroupList = () => {
     if (response.ok) {
       const data = await response.json();
       console.log(data);
-      setList(data);
+      setTaskList(data);
     } else {
       return "Error: ", response.status, response.statusText;
     }
   };
 
-  const updateTask = async (newTasks) => {
+  const updateTask = async (newTask) => {
     const API_URL =
       "https://playground.4geeks.com/apis/fake/todos/user/luisroldan";
     const options = {
@@ -50,7 +28,7 @@ export const GroupList = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(newTasks),
+      body: JSON.stringify(newTask),
     };
     const response = await fetch(API_URL, options);
     if (response.ok) {
@@ -62,18 +40,66 @@ export const GroupList = () => {
   };
 
   const handleClick = (index) => {
-    let newTasks = [...tasks];
+    let newTasks = [...taskList];
     newTasks.splice(index, 1);
+    setTaskList(newTasks);
     updateTask(newTasks);
-    setTasks(newTasks);
   };
-  const handleKeyUp = (e) => {
+
+  const handleKeyUp = async (e) => {
     if (e.code === "Enter") {
       const inputValue = e.target.value.trim();
       if (inputValue !== "") {
-        setTasks([...tasks, inputValue]);
+        const newTask = { label: inputValue, done: false };
+        updateTask([...taskList, newTask]);
+        setTaskList([...taskList, newTask]);
         e.target.value = "";
       }
+    }
+  };
+
+  const deleteUser = async () => {
+    const API_URL =
+      "https://playground.4geeks.com/apis/fake/todos/user/luisroldan";
+    const options = {
+      method: "DELETE",
+    };
+    const response = await fetch(API_URL, options);
+    if (response.ok) {
+      const data = await response.json();
+      console.log(data);
+      getTodo();
+      createUser();
+    } else {
+      console.error("Error:", response.status, response.statusText);
+    }
+  };
+
+  const createUser = async () => {
+    const API_URL =
+      "https://playground.4geeks.com/apis/fake/todos/user/luisroldan";
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify([]),
+    };
+
+    try {
+      const response = await fetch(API_URL, options);
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Usuario creado:", data);
+      } else {
+        console.error(
+          "Error al crear el usuario:",
+          response.status,
+          response.statusText
+        );
+      }
+    } catch (error) {
+      console.error("Error de red:", error);
     }
   };
 
@@ -85,11 +111,11 @@ export const GroupList = () => {
     <div className="text-center">
       <input className="input" type="text" onKeyUp={handleKeyUp} />
       <ul className="list-group">
-        {tasks.length === 0
+        {taskList.length === 0
           ? "No tasks, add a task"
-          : tasks.map((t, index) => (
+          : taskList.map((t, index) => (
               <li className="list-group-item list-group-item-light">
-                {t}
+                {t.label}
                 <div
                   className="buttonX"
                   onClick={() => handleClick(index)}
@@ -100,8 +126,9 @@ export const GroupList = () => {
               </li>
             ))}
       </ul>
+      <button onClick={deleteUser}>Clear all tasks</button>
       <div className="list-group-item list-group-item-light itemsLeft">
-        {tasks.length} items left
+        {taskList.length} items left
       </div>
     </div>
   );
