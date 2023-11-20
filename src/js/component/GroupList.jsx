@@ -15,13 +15,14 @@ export const GroupList = () => {
       const data = await response.json();
       console.log(data);
       setTaskList(data);
-      // createUser();
     } else {
+      createUser();
+      getTodo();
       return "Error: ", response.status, response.statusText;
     }
   };
 
-  const updateTask = async (newTask) => {
+  const updateTask = async (newTask, createUser, getTodo) => {
     const API_URL =
       "https://playground.4geeks.com/apis/fake/todos/user/luisroldan";
     const options = {
@@ -69,7 +70,7 @@ export const GroupList = () => {
     if (response.ok) {
       const data = await response.json();
       console.log(data);
-      createUser();
+      // createUser();
       getTodo();
     } else {
       console.error("Error:", response.status, response.statusText);
