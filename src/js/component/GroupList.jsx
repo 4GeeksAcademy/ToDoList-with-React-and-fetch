@@ -17,12 +17,11 @@ export const GroupList = () => {
       setTaskList(data);
     } else {
       createUser();
-      getTodo();
       return "Error: ", response.status, response.statusText;
     }
   };
 
-  const updateTask = async (newTask, createUser, getTodo) => {
+  const updateTask = async (newTask) => {
     const API_URL =
       "https://playground.4geeks.com/apis/fake/todos/user/luisroldan";
     const options = {
@@ -36,6 +35,7 @@ export const GroupList = () => {
     if (response.ok) {
       const data = await response.json();
       console.log(data);
+      getTodo();
     } else {
       return "Error: ", response.status, response.statusText;
     }
@@ -44,7 +44,7 @@ export const GroupList = () => {
   const handleClick = (index) => {
     let newTasks = [...taskList];
     newTasks.splice(index, 1);
-    setTaskList(newTasks);
+    // setTaskList(newTasks);
     updateTask(newTasks);
   };
 
@@ -54,7 +54,7 @@ export const GroupList = () => {
       if (inputValue !== "") {
         const newTask = { label: inputValue, done: false };
         updateTask([...taskList, newTask]);
-        setTaskList([...taskList, newTask]);
+        // setTaskList([...taskList, newTask]);
         e.target.value = "";
       }
     }
@@ -70,8 +70,8 @@ export const GroupList = () => {
     if (response.ok) {
       const data = await response.json();
       console.log(data);
-      // createUser();
-      getTodo();
+      createUser();
+      // getTodo();
     } else {
       console.error("Error:", response.status, response.statusText);
     }
@@ -117,12 +117,12 @@ export const GroupList = () => {
         {taskList.length === 0
           ? "No tasks, add a task"
           : taskList.map((t, index) => (
-              <li className="list-group-item list-group-item-light">
+              <li className="list-group-item list-group-item-light" key={index}>
                 {t.label}
                 <div
                   className="buttonX"
                   onClick={() => handleClick(index)}
-                  key={index}
+                  // key={index}
                 >
                   x
                 </div>
